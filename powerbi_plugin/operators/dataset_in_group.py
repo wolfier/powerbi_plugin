@@ -92,11 +92,14 @@ class PowerBIDatasetInGroupRefreshOperator(BaseOperator):
                     break
 
                 if not self.alerted_delay and timezone.utcnow() > timeout:
-                    send_email(
-                        context['task'].email,
-                        f"Dataset refresh for {self.dataset_id} is delayed.",
-                        f"Dataset refresh for {self.dataset_id} is delayed. Please contact Airflow Admin.",
-                    )
+                    try:
+                        send_email(
+                            context['task'].email,
+                            f"Dataset refresh for {self.dataset_id} is delayed.",
+                            f"Dataset refresh for {self.dataset_id} is delayed. Please contact Airflow Admin.",
+                        )
+                    except Exception:
+                        self.log.info("Unable to send email to inform user that dataset refresh is delayed.")
                     self.alerted_delay = True
 
             if status in self.success_status:

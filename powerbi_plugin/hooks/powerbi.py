@@ -68,19 +68,20 @@ class PowerBIHook(BaseHook):
             dataset_id: str,
     ) -> str:
         """
-        Triggers a refresh for the specified dataset from the specified workspace.
+        Triggers an enhanced refresh for the specified dataset from the specified workspace.
 
         https://learn.microsoft.com/en-us/rest/api/power-bi/datasets/refresh-dataset-in-group
-
+        https://learn.microsoft.com/en-us/power-bi/connect-data/asynchronous-refresh
         :param group_id: The workspace ID
         :param dataset_id: The dataset ID
         """
         hook = HttpHook(http_conn_id=self.powerbi_conn_id, method="post")
         response = hook.run(
             endpoint=f"myorg/groups/{group_id}/datasets/{dataset_id}/refreshes",
-            headers=self._prep_request_header()
+            headers=self._prep_request_header(),
+            json={"type": "full"}
         )
-        return response.json()["x-ms-request-id"]
+        return response.headers["RequestId"]
 
     def check_refresh_status(
             self,

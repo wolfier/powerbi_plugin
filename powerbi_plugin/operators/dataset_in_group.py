@@ -98,7 +98,7 @@ class PowerBIDatasetInGroupRefreshOperator(BaseOperator):
                             f"Dataset refresh for {self.dataset_id} is delayed.",
                             f"Dataset refresh for {self.dataset_id} is delayed. Please contact Airflow Admin.",
                         )
-                    except Exception:
+                    except OSError:
                         self.log.info("Unable to send email to inform user that dataset refresh is delayed.")
                     self.alerted_delay = True
 

@@ -109,5 +109,6 @@ class PowerBIHook(BaseHook):
             extended_status = response.json()["extendedStatus"]
 
             self.log.info(f"The current status of the refresh is %s.", extended_status)
+            return extended_status
         except Exception:
             raise AirflowException("Failed to check the status of the refresh.")
